@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+option go_package = "./api/pb/name_service" ;
+
+package name_service ; 
+
+service NameService{
+    rpc GreetName(Name) returns (GiveReply) {}
+}
+
+message Name {
+    string name = 1 ; 
+}
+
+message GiveReply {
+    string message = 1 ;
+    string err = 2 ; 
+}
