@@ -5,6 +5,7 @@ import (
 	"log"
 
 	pb "github.com/Rahulkumar2002/simple-microservice/api/pb"
+	"go.mongodb.org/mongo-driver/bson"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -29,14 +30,30 @@ func NewNameService() Service {
 }
 
 func (n *nameService) GiveName(_ context.Context, name string) (string, error) {
-	// store the name in the sql database and send it to the greet service:
 	log.Println("Inside the Name microservice!!!")
+	mongoClient := DBConnection()
+	defer func() {
+		if err := mongoClient.Disconnect(context.TODO()); err != nil {
+			panic(err)
+		}
+	}()
+
 	Client, conn := createConnection()
 	defer conn.Close()
-	log.Printf("Client=%v", Client)
+
+	coll := mongoClient.Database("names").Collection("name")
+	result, err := coll.InsertOne(context.TODO(), bson.D{
+		{Key: "name", Value: name},
+	})
+	if err != nil {
+		return "", err
+	}
+	log.Printf("Result of MongoDB insertion: %v", result)
+
 	resp, err := CallGreetName(Client, name)
 	if err != nil {
 		return "", err
 	}
+
 	return resp, nil
 }

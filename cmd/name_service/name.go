@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	nolog "log"
 	"net"
 	"net/http"
 	"os"
@@ -12,6 +13,7 @@ import (
 	"github.com/Rahulkumar2002/simple-microservice/pkg/name_service/endpoints"
 	"github.com/Rahulkumar2002/simple-microservice/pkg/name_service/transport"
 	"github.com/go-kit/log"
+	"github.com/joho/godotenv"
 	"github.com/oklog/oklog/pkg/group"
 )
 
@@ -20,6 +22,9 @@ var (
 )
 
 func main() {
+	if err := godotenv.Load(); err != nil {
+		nolog.Println("No .env file found")
+	}
 	var (
 		logger   log.Logger
 		httpAddr = net.JoinHostPort("localhost", defaultHTTPPort)
