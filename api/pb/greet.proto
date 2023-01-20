@@ -1,10 +1,10 @@
 syntax = "proto3";
 
-option go_package = "./api/pb/name_service" ;
+option go_package = "./api/pb" ;
 
-package name_service ; 
+package pb ; 
 
-service NameService{
+service GreetService{
     rpc GreetName(Name) returns (GiveReply) {}
 }
 

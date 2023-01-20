@@ -24,6 +24,7 @@ func NewHTTPHandler(ep endpoints.Set) http.Handler {
 }
 
 func decodeHTTPGiveNameRequest(_ context.Context, r *http.Request) (interface{}, error) {
+	logger.Log("Decoding", "RequestBody")
 	var req endpoints.GiveNameRequest
 	if r.ContentLength == 0 {
 		logger.Log("Request with no body")
@@ -38,12 +39,16 @@ func decodeHTTPGiveNameRequest(_ context.Context, r *http.Request) (interface{},
 }
 
 func encodeResponse(_ context.Context, w http.ResponseWriter, response interface{}) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT")
+	w.Header().Set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization")
 	if e, ok := response.(error); ok && e != nil {
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		json.NewEncoder(w).Encode(map[string]interface{}{
 			"error": e.Error(),
 		})
 	}
+	logger.Log("Response", "Encoded")
 	return json.NewEncoder(w).Encode(response)
 }
 

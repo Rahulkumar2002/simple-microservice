@@ -3,6 +3,7 @@ package endpoints
 import (
 	"context"
 	"errors"
+	"log"
 
 	"github.com/Rahulkumar2002/simple-microservice/pkg/name_service"
 	"github.com/go-kit/kit/endpoint"
@@ -19,6 +20,7 @@ func NewEndpointSet(svc name_service.Service) Set {
 }
 
 func MakeGiveNameEndpoint(svc name_service.Service) endpoint.Endpoint {
+	log.Printf("Inside MakeGiveNameEndpoint!!!")
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(GiveNameRequest)
 		message, err := svc.GiveName(ctx, req.Name)
@@ -31,6 +33,7 @@ func MakeGiveNameEndpoint(svc name_service.Service) endpoint.Endpoint {
 }
 
 func (s *Set) GiveName(ctx context.Context, name string) (string, error) {
+	log.Printf("Inside GiveName Set!!!")
 	resp, err := s.GiveNameEndpoint(ctx, GiveNameRequest{Name: name})
 	if err != nil {
 		return "", err
